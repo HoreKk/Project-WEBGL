@@ -30,6 +30,10 @@
 			</div>
 		</div>
 
+		<audio loop id="music" preload="auto" style="display: none">
+			<source src="textures/musics/music1.mp3" type="audio/mpeg">
+		</audio>
+
 		<script type="module">
 
 			import * as THREE from '../../build/three.module.js';
@@ -172,6 +176,38 @@
 
 				raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, - 1, 0 ), 0, 10 );
 
+				var listener = new THREE.AudioListener();
+				camera.add( listener );
+
+				var audioLoader = new THREE.AudioLoader();
+
+			var sound4 = new THREE.Audio( listener );
+			audioLoader.load( 'textures/musics/music1.mp3', function ( buffer ) {
+					sound4.setBuffer( buffer );
+					sound4.setLoop( true );
+					sound4.setVolume( 0.5 );
+					sound4.play();
+				} );
+
+
+				var SoundControls = function () {
+					this.master = listener.getMasterVolume();
+					this.Ambient = sound4.getVolume();
+				};
+
+				var gui = new GUI();
+				var soundControls = new SoundControls();
+				var volumeFolder = gui.addFolder( 'sound volume' );
+
+				volumeFolder.add( soundControls, 'master' ).min( 0.0 ).max( 1.0 ).step( 0.01 ).onChange( function () {
+					listener.setMasterVolume( soundControls.master );
+				} );
+
+				volumeFolder.add( soundControls, 'Ambient' ).min( 0.0 ).max( 1.0 ).step( 0.01 ).onChange( function () {
+					sound4.setVolume( soundControls.Ambient );
+				} );
+
+				volumeFolder.open();
 
 				var loader = new GLTFLoader().setPath( 'textures/Door-Portal/' );
 				loader.load( 'scene.gltf', function ( gltf ) {
@@ -432,6 +468,8 @@
 				document.body.appendChild( stats.dom );
 
 				window.addEventListener( 'resize', onWindowResize, false );
+
+				animate();
 }
 
 
