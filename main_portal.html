@@ -87,7 +87,7 @@
 				// } );
 				//
 
-				var texture_glass = new THREE.TextureLoader().load( '../textures/flat.jpg' );
+				var texture_glass = new THREE.TextureLoader().load( './textures/flat.jpg' );
 
 				var geometry_glass = new THREE.PlaneBufferGeometry( 400, 400, 200 );
 				var material_glass = new THREE.MeshBasicMaterial( { map: texture_glass, side: THREE.DoubleSide, opacity: 0.35, transparent: true } );
