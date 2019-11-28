@@ -16,12 +16,11 @@
 			import * as THREE from '../../build/three.module.js';
 
 			import { OrbitControls } from '../jsm/controls/OrbitControls.js';
-
 			import { GLTFLoader } from '../jsm/loaders/GLTFLoader.js';
 
 
 			var camera, scene, renderer;
-			var mesh, controls, container;
+			var mesh, controls, container, refractor;
 
 			var clock = new THREE.Clock();
 
@@ -33,11 +32,11 @@
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
 
-				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 1000 );
+				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 1500 );
 				camera.position.z = 500;
 
 				scene = new THREE.Scene();
-				scene.background = new THREE.Color( 0x000000 );
+				scene.background = new THREE.Color( 0x999999 );
 
 				var ambient = new THREE.AmbientLight( 0xffffff, 1 );
 				scene.add( ambient );
@@ -48,59 +47,130 @@
 
 				var loader = new GLTFLoader().setPath( 'textures/Door-Portal/' );
 				loader.load( 'scene.gltf', function ( gltf ) {
-					gltf.scene.position.z = 300;
+					gltf.scene.position.z = 600;
 					gltf.scene.position.y = 1;
 
 					scene.add( gltf.scene );
 
 				} );
 
-				// Creation de l'environnement
+				var loader = new GLTFLoader().setPath( 'textures/portal_radio_a_prop/' );
+				loader.load( 'scene.gltf', function ( gltf ) {
+					gltf.scene.position.set(-100, 0, -150);
+
+					gltf.scene.position.y = 9;
+
+					gltf.scene.scale.set(0.5, 0.5, 0.5);
+
+					scene.add( gltf.scene );
+
+				} );
+
+				//Creation de l'environnement
 
 				var texture = new THREE.TextureLoader().load( 'textures/texture_grid.png' );
 
-				var geometry = new THREE.PlaneBufferGeometry( 600, 600, 300 );
-				var material = new THREE.MeshBasicMaterial( { map: texture, side: THREE.DoubleSide } );
+				var geometry = new THREE.PlaneBufferGeometry( 1200, 1200, 600 );
+				var material = new THREE.MeshBasicMaterial( { map: texture, side: THREE.DoubleSide} );
 
 				var base = new THREE.Mesh( geometry, material );
 
+				// Creation du mur de verre
+
+				// var refractorGeometry = new THREE.PlaneBufferGeometry( 200, 200 );
+				//
+				// refractor = new Refractor( refractorGeometry, {
+				// 	color: 0xff0000,
+				// 	textureWidth: 1024,
+				// 	textureHeight: 1024,
+				// 	shader: WaterRefractionShader
+				// } );
+				//
+
+				var texture_glass = new THREE.TextureLoader().load( '../textures/flat.jpg' );
+
+				var geometry_glass = new THREE.PlaneBufferGeometry( 400, 400, 200 );
+				var material_glass = new THREE.MeshBasicMaterial( { map: texture_glass, side: THREE.DoubleSide, opacity: 0.35, transparent: true } );
+
+				var base_glass = new THREE.Mesh( geometry_glass, material_glass );
+
+				var geometry_chamber = new THREE.PlaneBufferGeometry( 400, 400, 200 );
+				var material1 = new THREE.MeshBasicMaterial( { map: texture_glass, side: THREE.DoubleSide } );
+
+				var base_chamber = new THREE.Mesh( geometry_chamber, material1 );
+
+				base_chamber.rotation.x = Math.PI / 2;
+				base_chamber.position.y = 1;
+				base_chamber.Color = 0xffffff;
+
+				scene.add(base_chamber);
+
+
 				// Premiere salle
+
+				var position_wall = 600;
+				var position_glass = 200;
 
 				for (var i = 0; i < 6; i++) {
 
 					base.rotation.x = Math.PI / 2;
+					base_glass.rotation.x = Math.PI / 2;
 
 					base[i] = base.clone();
 
+					base_glass[i] = base_glass.clone();
+
+					base_glass[0].position.y = -1
+
 					if (i == 1) {
-						base[i].position.y = 599;
+						base[i].position.y = 1199;
+						base_glass[i].position.y = 399;
 					}
 
 					if (i == 2) {
-						base[i].position.y = 300;
-						base[i].position.z = 300;
+						base[i].position.y = position_wall;
+						base[i].position.z = position_wall;
 						base[i].rotation.x = base.rotation.x * 2;
+
+						base_glass[i].position.y = position_glass;
+						base_glass[i].position.z = position_glass;
+						base_glass[i].rotation.x = base.rotation.x * 2;
 					}
 
 					if (i == 3) {
-						base[i].position.y = 300;
-						base[i].position.z = -300;
+						base[i].position.y = position_wall;
+						base[i].position.z = -position_wall;
 						base[i].rotation.x = base.rotation.x * 2;
+
+						base_glass[i].position.y = position_glass;
+						base_glass[i].position.z = -position_glass;
+						base_glass[i].rotation.x = base.rotation.x * 2;
 					}
 
 					if (i == 4) {
-						base[i].position.x = 300;
-						base[i].position.y = 300;
+						base[i].position.x = position_wall;
+						base[i].position.y = position_wall;
 						base[i].rotation.y = base.rotation.x ;
+
+						base_glass[i].position.x = position_glass;
+						base_glass[i].position.y = position_glass;
+						base_glass[i].rotation.y = base.rotation.x ;
 					}
 
 					if (i == 5) {
-						base[i].position.x = -300;
-						base[i].position.y = 300;
+						base[i].position.x = -position_wall;
+						base[i].position.y = position_wall;
 						base[i].rotation.y = base.rotation.x ;
+
+						base_glass[i].position.x = -position_glass;
+						base_glass[i].position.y = position_glass;
+						base_glass[i].rotation.y = base.rotation.x ;
 					}
 
 					scene.add( base[i] );
+
+					scene.add( base_glass[i] );
+
 
 				}
 
