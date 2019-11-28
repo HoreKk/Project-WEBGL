@@ -191,17 +191,12 @@
 
 
 				var SoundControls = function () {
-					this.master = listener.getMasterVolume();
 					this.Ambient = sound4.getVolume();
 				};
 
 				var gui = new GUI();
 				var soundControls = new SoundControls();
-				var volumeFolder = gui.addFolder( 'sound volume' );
-
-				volumeFolder.add( soundControls, 'master' ).min( 0.0 ).max( 1.0 ).step( 0.01 ).onChange( function () {
-					listener.setMasterVolume( soundControls.master );
-				} );
+				var volumeFolder = gui.addFolder( 'Volume' );
 
 				volumeFolder.add( soundControls, 'Ambient' ).min( 0.0 ).max( 1.0 ).step( 0.01 ).onChange( function () {
 					sound4.setVolume( soundControls.Ambient );
@@ -419,12 +414,6 @@
 					this.thirdSphere = sound3.getVolume();
 					this.Ambient = sound4.getVolume();
 				};
-				var GeneratorControls = function () {
-					this.frequency = oscillator.frequency.value;
-					this.wavetype = oscillator.type;
-				};
-
-				var gui = new GUI();
 
 				var geometryRed = new THREE.BoxGeometry( 50, 5, 50 );
                 var materialRed = new THREE.MeshBasicMaterial( {color: 0xC12929} );
