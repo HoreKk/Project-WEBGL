@@ -1,0 +1,288 @@
+{
+  "accessors": [
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 5364,
+      "max": [
+        17.209295272827148,
+        1.1342140436172485,
+        -4.630986213684082
+      ],
+      "min": [
+        -10.439449310302734,
+        0.023103000596165657,
+        -6.5971012115478516
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 64368,
+      "componentType": 5126,
+      "count": 5364,
+      "max": [
+        0.9970363974571228,
+        1,
+        0.99846488237380981
+      ],
+      "min": [
+        -0.99706387519836426,
+        -1,
+        -0.99891304969787598
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 32136,
+      "max": [
+        5363
+      ],
+      "min": [
+        0
+      ],
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 128736,
+      "componentType": 5126,
+      "count": 2058,
+      "max": [
+        25.07447624206543,
+        1.1342140436172485,
+        1.2298719882965088
+      ],
+      "min": [
+        -12.355369567871094,
+        0.023103000596165657,
+        -4.446533203125
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 153432,
+      "componentType": 5126,
+      "count": 2058,
+      "max": [
+        0.98342901468276978,
+        1,
+        0.98455613851547241
+      ],
+      "min": [
+        -0.98733854293823242,
+        -1,
+        -0.98758751153945923
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 128544,
+      "componentType": 5125,
+      "count": 12300,
+      "max": [
+        2057
+      ],
+      "min": [
+        0
+      ],
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 178128,
+      "componentType": 5126,
+      "count": 150,
+      "max": [
+        -10.739442825317383,
+        1.1630810499191284,
+        3.7600929737091064
+      ],
+      "min": [
+        -21.041065216064453,
+        -8.2999998994637281e-05,
+        -7.1242508888244629
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 179928,
+      "componentType": 5126,
+      "count": 150,
+      "max": [
+        0.94819337129592896,
+        1,
+        0.9638867974281311
+      ],
+      "min": [
+        -0.92696970701217651,
+        -1,
+        -0.96829944849014282
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 177744,
+      "componentType": 5125,
+      "count": 816,
+      "max": [
+        149
+      ],
+      "min": [
+        0
+      ],
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "extras": {
+      "author": "Huargenn (https://sketchfab.com/Huargenn)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/aperture-laboratories-portal-1b9b19eb6f4349f7a114e7388ef9a007",
+      "title": "Aperture Laboratories , Portal"
+    },
+    "generator": "Sketchfab-6.22.0",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 181008,
+      "byteOffset": 0,
+      "name": "floatBufferViews",
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 181728,
+      "byteOffset": 181008,
+      "byteStride": 12,
+      "name": "floatBufferViews",
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 362736,
+      "uri": "scene.bin"
+    }
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "emissiveFactor": [
+        0.22,
+        0.22,
+        0.22
+      ],
+      "name": "Scene_-_Root",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.1048508744,
+          0.42386201420000003,
+          0.90964926440000005,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 0.59999999999999998
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0
+          },
+          "indices": 2,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 4,
+            "POSITION": 3
+          },
+          "indices": 5,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 7,
+            "POSITION": 6
+          },
+          "indices": 8,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "name": "RootNode (gltf orientation matrix)",
+      "rotation": [
+        -0.70710678118654746,
+        -0,
+        -0,
+        0.70710678118654757
+      ]
+    },
+    {
+      "children": [
+        2
+      ],
+      "name": "RootNode (model correction matrix)"
+    },
+    {
+      "children": [
+        3,
+        4,
+        5
+      ],
+      "name": "a79a2ef0732b4a56be17def2ac1de126.obj.cleaner"
+    },
+    {
+      "mesh": 0,
+      "name": ""
+    },
+    {
+      "mesh": 1,
+      "name": ""
+    },
+    {
+      "mesh": 2,
+      "name": ""
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "OSG_Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ]
+}
+

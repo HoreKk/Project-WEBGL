@@ -41,15 +41,22 @@
 				var ambient = new THREE.AmbientLight( 0xffffff, 1 );
 				scene.add( ambient );
 
-				var textureLoader = new THREE.TextureLoader();
-				var texture1 = textureLoader.load( './textures/Door-Portal/Doors_baseColor.png' );
-				texture1.flipY = false;
-
 				var loader = new GLTFLoader().setPath( 'textures/Door-Portal/' );
 				loader.load( 'scene.gltf', function ( gltf ) {
 					gltf.scene.position.z = 600;
 					gltf.scene.position.y = 1;
 
+					scene.add( gltf.scene );
+
+				} );
+
+				var loader = new GLTFLoader().setPath( 'textures/logo/' );
+				loader.load( 'scene.gltf', function ( gltf ) {
+					gltf.scene.position.z = 0;
+					gltf.scene.position.x = -598;
+					gltf.scene.position.y = 300;
+					gltf.scene.rotation.y = Math.PI / 2;
+					gltf.scene.scale.set(10, 10, 10);
 					scene.add( gltf.scene );
 
 				} );
@@ -60,8 +67,33 @@
 
 					gltf.scene.position.y = 9;
 
-					gltf.scene.scale.set(0.5, 0.5, 0.5);
+					gltf.scene.scale.set(0.25, 0.25, 0.25);
 
+					scene.add( gltf.scene );
+
+				} );
+
+				// caracter
+
+				var loader = new GLTFLoader().setPath( 'textures/camera/' );
+				loader.load( 'scene.gltf', function ( gltf ) {
+					gltf.scene.position.z = 600;
+					gltf.scene.position.x = -600;
+					gltf.scene.position.y = 1100;
+					gltf.scene.rotation.y = Math.PI / 4;
+					gltf.scene.rotation.z = -Math.PI / 4;
+					gltf.scene.scale.set(0.25, 0.25, 0.25);
+					scene.add( gltf.scene );
+
+				} );
+
+				var loader = new GLTFLoader().setPath( 'textures/Cube/' );
+				loader.load( 'scene.gltf', function ( gltf ) {
+					gltf.scene.position.z = 130;
+					gltf.scene.position.x = 130;
+					gltf.scene.position.y = 30;
+					gltf.scene.rotation.z = -Math.PI / 2;
+					gltf.scene.scale.set(30, 30, 30);
 					scene.add( gltf.scene );
 
 				} );
@@ -89,12 +121,12 @@
 
 				var texture_glass = new THREE.TextureLoader().load( './textures/flat.jpg' );
 
-				var geometry_glass = new THREE.PlaneBufferGeometry( 400, 400, 200 );
+				var geometry_glass = new THREE.PlaneBufferGeometry( 325, 325, 162.5 );
 				var material_glass = new THREE.MeshBasicMaterial( { map: texture_glass, side: THREE.DoubleSide, opacity: 0.35, transparent: true } );
 
 				var base_glass = new THREE.Mesh( geometry_glass, material_glass );
 
-				var geometry_chamber = new THREE.PlaneBufferGeometry( 400, 400, 200 );
+				var geometry_chamber = new THREE.PlaneBufferGeometry( 325, 325, 162.5 );
 				var material1 = new THREE.MeshBasicMaterial( { map: texture_glass, side: THREE.DoubleSide } );
 
 				var base_chamber = new THREE.Mesh( geometry_chamber, material1 );
@@ -109,7 +141,7 @@
 				// Premiere salle
 
 				var position_wall = 600;
-				var position_glass = 200;
+				var position_glass = 162.5;
 
 				for (var i = 0; i < 6; i++) {
 
@@ -124,7 +156,7 @@
 
 					if (i == 1) {
 						base[i].position.y = 1199;
-						base_glass[i].position.y = 399;
+						base_glass[i].position.y = 324;
 					}
 
 					if (i == 2) {
