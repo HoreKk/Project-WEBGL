@@ -4,6 +4,7 @@
 		<title>three.js webgl - geometry - cube</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="style.css">
 		<link type="text/css" rel="stylesheet" href="../main.css">
 	</head>
 	<body>
@@ -11,29 +12,44 @@
 			Portal Game by <a>HoreK</a> and <a>NawaK</a>
 		</div>
 
+		<div id="overlay">
+			<div>
+				<button id="startButton">Click to Play</button>
+				<p>Start the best game ever</p>
+			</div>
+		</div>
+
 		<script type="module">
 
 			import * as THREE from '../../build/three.module.js';
 
 			import { OrbitControls } from '../jsm/controls/OrbitControls.js';
+			import { GUI } from '../jsm/libs/dat.gui.module.js';
 			import { GLTFLoader } from '../jsm/loaders/GLTFLoader.js';
+			import { FirstPersonControls } from '../jsm/controls/FirstPersonControls.js';
+			import Stats from '../jsm/libs/stats.module.js';
 
 
 			var camera, scene, renderer;
-			var mesh, controls, container, refractor;
+			var mesh, controls, container, refractor, stats;
 
 			var clock = new THREE.Clock();
 
-			init();
+			var startButton = document.getElementById( 'startButton' );
+			startButton.addEventListener( 'click', init );
+
 			animate();
 
 			function init() {
+
+				var overlay = document.getElementById( 'overlay' );
+				overlay.remove();
 
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
 
 				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 1500 );
-				camera.position.z = 500;
+				camera.position.set( 0, 200, 0 );
 
 				scene = new THREE.Scene();
 				scene.background = new THREE.Color( 0x999999 );
@@ -73,6 +89,16 @@
 
 				} );
 
+				var loader = new GLTFLoader().setPath( 'textures/bed/' );
+				loader.load( 'scene.gltf', function ( gltf ) {
+					gltf.scene.position.x = 150;
+					gltf.scene.position.z = -150;
+					gltf.scene.scale.set(50, 50, 50);
+
+					scene.add( gltf.scene );
+
+				} );
+
 				// caracter
 
 				var loader = new GLTFLoader().setPath( 'textures/camera/' );
@@ -91,12 +117,27 @@
 				loader.load( 'scene.gltf', function ( gltf ) {
 					gltf.scene.position.z = 130;
 					gltf.scene.position.x = 130;
-					gltf.scene.position.y = 30;
+					gltf.scene.position.y = 20;
 					gltf.scene.rotation.z = -Math.PI / 2;
-					gltf.scene.scale.set(30, 30, 30);
+					gltf.scene.scale.set(20, 20, 20);
 					scene.add( gltf.scene );
 
 				} );
+
+				var geometry = new THREE.CylinderBufferGeometry( 5, 5, 1, 32 );
+				var material = new THREE.MeshBasicMaterial( { color: 0x00DBFF } );
+				var cylinder = new THREE.Mesh( geometry, material );
+			  cylinder.position.z = 180;
+				cylinder.position.y = 1;
+				scene.add( cylinder );
+
+				var distance = 180;
+				for(var point = 0 ; point < 20 ; point++){
+					cylinder = cylinder.clone();
+					scene.add( cylinder );
+					cylinder.position.z = distance + 20;
+					distance = cylinder.position.z;
+				}
 
 				//Creation de l'environnement
 
@@ -216,9 +257,28 @@
 				controls.target.set( 0, 100, 0 );
 				controls.update();
 
-				window.addEventListener( 'resize', onWindowResize, false );
+				//gui
 
-			}
+				var SoundControls = function () {
+					this.master = listener.getMasterVolume();
+					this.firstSphere = sound1.getVolume();
+					this.secondSphere = sound2.getVolume();
+					this.thirdSphere = sound3.getVolume();
+					this.Ambient = sound4.getVolume();
+				};
+				var GeneratorControls = function () {
+					this.frequency = oscillator.frequency.value;
+					this.wavetype = oscillator.type;
+				};
+
+				var gui = new GUI();
+
+				stats = new Stats();
+				document.body.appendChild( stats.dom );
+
+				window.addEventListener( 'resize', onWindowResize, false );
+}
+
 
 			function onWindowResize() {
 
@@ -232,10 +292,10 @@
 			function animate() {
 
 				requestAnimationFrame( animate );
-
 				renderer.render( scene, camera );
-
+				stats.update();
 			}
+
 
 		</script>
 
