@@ -41,6 +41,7 @@
 			import { GUI } from '../jsm/libs/dat.gui.module.js';
 			import { GLTFLoader } from '../jsm/loaders/GLTFLoader.js';
 			import Stats from '../jsm/libs/stats.module.js';
+			import { DragControls } from '../jsm/controls/DragControls.js';
 
 			import { Refractor } from '../jsm/objects/Refractor.js';
 			import { WaterRefractionShader } from '../jsm/shaders/WaterRefractionShader.js';
@@ -240,7 +241,7 @@
 				loader.load( 'scene.gltf', function ( gltf ) {
 					gltf.scene.position.x = 150;
 					gltf.scene.position.z = -150;
-					gltf.scene.scale.set(50, 50, 50);
+					gltf.scene.scale.set(30, 30, 30);
 
 					scene.add( gltf.scene );
 
@@ -267,6 +268,16 @@
 					gltf.scene.position.y = 20;
 					gltf.scene.rotation.z = -Math.PI / 2;
 					gltf.scene.scale.set(20, 20, 20);
+					scene.add( gltf.scene );
+
+				} );
+
+				var loader = new GLTFLoader().setPath( 'textures/personnage/' );
+				loader.load( 'scene.gltf', function ( gltf ) {
+					gltf.scene.position.z = 0;
+					gltf.scene.position.y = 43;
+					gltf.scene.rotation.y = Math.PI / 2;
+					gltf.scene.scale.set(40, 40, 40);
 					scene.add( gltf.scene );
 
 				} );
@@ -523,6 +534,9 @@
 					prevTime = time;
 
 				}
+
+				//Collision red button
+
 
 				renderer.render( scene, camera );
 				stats.update();
