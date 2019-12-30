@@ -64,6 +64,8 @@
 			var moveRight = false;
 			var canJump = false;
 
+			var player_collision_distance = 15;
+
 			var prevTime = performance.now();
 			var velocity = new THREE.Vector3();
 			var direction = new THREE.Vector3();
@@ -266,6 +268,7 @@
 					gltf.scene.scale.set(10, 10, 10);
 					scene.add( gltf.scene );
 
+
 				} );
 
 				var loader = new GLTFLoader().setPath( 'textures/portal_radio_a_prop/' );
@@ -277,6 +280,7 @@
 					gltf.scene.scale.set(0.25, 0.25, 0.25);
 
 					scene.add( gltf.scene );
+					objects.push(gltf.scene);
 
 				} );
 
@@ -287,6 +291,7 @@
 					gltf.scene.scale.set(30, 30, 30);
 
 					scene.add( gltf.scene );
+					objects.push(gltf.scene);
 
 				} );
 
@@ -312,6 +317,7 @@
 					gltf.scene.rotation.z = -Math.PI / 2;
 					gltf.scene.scale.set(20, 20, 20);
 					scene.add( gltf.scene );
+					objects.push(gltf.scene);
 
 				} );
 
@@ -455,11 +461,15 @@
 					}
 
 					scene.add( base[i] );
+					objects.push(base[i]);
+
 
 					scene.add( base_glass[i] );
+					objects.push(base_glass[i]);
 
 
 				}
+
 
 				renderer = new THREE.WebGLRenderer( { antialias: true } );
 				renderer.setPixelRatio( window.devicePixelRatio );
@@ -478,43 +488,47 @@
 					this.Ambient = sound4.getVolume();
 				};
 
-				var geometryRed = new THREE.BoxGeometry( 50, 5, 50 );
-                var materialRed = new THREE.MeshBasicMaterial( {color: 0xC12929} );
-                var buttonRed = new THREE.Mesh( geometryRed, materialRed );
-                buttonRed.position.z = 126;
-                buttonRed.position.x = 1;
-                buttonRed.position.y = 3;
-                scene.add( buttonRed );
+				var geometryRed = new THREE.BoxBufferGeometry( 50, 5, 50 );
+				geometryRed = geometryRed.toNonIndexed(); // ensure each face has unique vertices
+        var materialRed = new THREE.MeshBasicMaterial( {color: 0xC12929} );
+        var buttonRed = new THREE.Mesh( geometryRed, materialRed );
+        buttonRed.position.z = 126;
+        buttonRed.position.x = 1;
+        buttonRed.position.y = 30;
+        scene.add( buttonRed );
+				objects.push(buttonRed);
 
-                //Button
 
-                var length = 12, width = 12;
 
-                var shape = new THREE.Shape();
-                shape.moveTo( 0,0 );
-                shape.lineTo( 0, width );
-                shape.lineTo( length, width );
-                shape.lineTo( length, 0 );
-                shape.lineTo( 0, 0 );
+        //Button
 
-                var extrudeSettings = {
-                    steps: 2,
-                    depth: 1,
-                    bevelEnabled: true,
-                    bevelThickness: 1,
-                    bevelSize: 1,
-                    bevelOffset: 25,
-                    bevelSegments: 1
-                };
+        var length = 12, width = 12;
 
-                var base = new THREE.ExtrudeBufferGeometry( shape, extrudeSettings );
-                var material = new THREE.MeshBasicMaterial( { color: 0xD6D6D6 } );
-                var baseButton = new THREE.Mesh( base, material ) ;
-                baseButton.rotation.x = Math.PI / 2;
-                baseButton.position.y = 2;
-                baseButton.position.z = 120;
-                baseButton.position.x = -5;
-                scene.add( baseButton );
+        var shape = new THREE.Shape();
+        shape.moveTo( 0,0 );
+        shape.lineTo( 0, width );
+        shape.lineTo( length, width );
+        shape.lineTo( length, 0 );
+        shape.lineTo( 0, 0 );
+
+        var extrudeSettings = {
+            steps: 2,
+            depth: 1,
+            bevelEnabled: true,
+            bevelThickness: 1,
+            bevelSize: 1,
+            bevelOffset: 25,
+            bevelSegments: 1
+        };
+
+        var base = new THREE.ExtrudeBufferGeometry( shape, extrudeSettings );
+        var material = new THREE.MeshBasicMaterial( { color: 0xD6D6D6 } );
+        var baseButton = new THREE.Mesh( base, material ) ;
+        baseButton.rotation.x = Math.PI / 2;
+        baseButton.position.y = 2;
+        baseButton.position.z = 120;
+        baseButton.position.x = -5;
+        scene.add( baseButton );
 
 				stats = new Stats();
 				document.body.appendChild( stats.dom );
@@ -533,6 +547,65 @@
 				renderer.setSize( window.innerWidth, window.innerHeight );
 
 			}
+
+			function degreesToRadians(degrees) {
+			  return degrees * Math.PI / 180;
+			}
+
+			function radiansToDegrees(radians) {
+			  return radians * 180 / Math.PI;
+			}
+
+			function detectPlayerCollision() {
+			    // The rotation matrix to apply to our direction vector
+			    // Undefined by default to indicate ray should coming from front
+			    var rotationMatrix;
+			    // Get direction of camera
+			    var cameraDirection = controls.getDirection(new THREE.Vector3(0, 0, 0)).clone();
+
+			    // Check which direction we're moving (not looking)
+			    // Flip matrix to that direction so that we can reposition the ray
+			    if (moveBackward) {
+			        rotationMatrix = new THREE.Matrix4();
+			        rotationMatrix.makeRotationY(degreesToRadians(180));
+			    }
+			    else if (moveLeft) {
+			        rotationMatrix = new THREE.Matrix4();
+			        rotationMatrix.makeRotationY(degreesToRadians(90));
+			    }
+			    else if (moveRight) {
+			        rotationMatrix = new THREE.Matrix4();
+			        rotationMatrix.makeRotationY(degreesToRadians(270));
+			    }
+
+			    // Player is not moving forward, apply rotation matrix needed
+			    if (rotationMatrix !== undefined) {
+			        cameraDirection.applyMatrix4(rotationMatrix);
+			    }
+
+			    // Apply ray to player camera
+			    var rayCaster2 = new THREE.Raycaster(controls.getObject().position, cameraDirection);
+
+			    // If our ray hit a collidable object, return true
+			    if (rayIntersect(rayCaster2, player_collision_distance)) {
+			        return true;
+			    } else {
+			        return false;
+			    }
+			}
+
+			function rayIntersect(ray, distance) {
+			    var intersects = ray.intersectObjects(objects);
+			    for (var i = 0; i < intersects.length; i++) {
+			        // Check if there's a collision
+			        if (intersects[i].distance < distance) {
+			            return true;
+			        }
+			    }
+			    return false;
+			}
+
+			console.log(controls.getObject());
 
 			function animate() {
 
@@ -559,8 +632,16 @@
 					direction.x = Number( moveRight ) - Number( moveLeft );
 					direction.normalize(); // this ensures consistent movements in all directions
 
-					if ( moveForward || moveBackward ) velocity.z -= direction.z * 400.0 * delta;
-					if ( moveLeft || moveRight ) velocity.x -= direction.x * 400.0 * delta;
+
+					if (detectPlayerCollision() == false) {
+
+						if ( moveForward || moveBackward ) velocity.z -= direction.z * 400.0 * delta;
+						if ( moveLeft || moveRight ) velocity.x -= direction.x * 400.0 * delta;
+
+					} else {
+						velocity.z = 0;
+						velocity.x = 0;
+					}
 
 					if ( onObject === true ) {
 
