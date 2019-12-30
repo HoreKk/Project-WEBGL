@@ -47,8 +47,10 @@
 			import { PointerLockControls } from '../jsm/controls/PointerLockControls.js';
 
 
-			var camera, scene, renderer;
+			var camera, scene, renderer, sphere;
 			var mesh, controls, container, refractor, stats;
+
+			var spotLight_chamber, lightHelper;
 
 			var objects = [];
 
@@ -88,6 +90,42 @@
 
 				var ambient = new THREE.AmbientLight( 0xffffff, 1 );
 				scene.add( ambient );
+
+				// var light_room = new THREE.PointLight( 0xffffff, 3, 1000 );
+				// light_room.position.set( 0, 800, 0);
+				// scene.add( light_room );
+				//
+				// var light_chamber = new THREE.PointLight( 0xffffff, 1.5, 1000 );
+				// light_chamber.position.set( 0, 300, 150);
+				// scene.add( light_chamber );
+
+				var light1 = new THREE.PointLight( 0xff0040, 2, 50 );
+				light1.position.set(  20,10,0);
+				light1.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: 0xff0040 } ) ) );
+				scene.add( light1 );
+
+				// spotLight_chamber = new THREE.SpotLight( 0xffffff, 3 );
+				// spotLight_chamber.position.set( -128, 110, 148);
+				// spotLight_chamber.angle = 2* Math.PI / 3;
+				// spotLight_chamber.penumbra = 0.05;
+				// spotLight_chamber.decay = 2;
+				// spotLight_chamber.distance = 200;
+				//
+				// scene.add( spotLight_chamber );
+				//
+				// lightHelper = new THREE.SpotLightHelper( spotLight_chamber );
+				// scene.add( lightHelper );
+
+				// var light_chamber1 = new THREE.PointLight( 0xff0000, 5, 1000 );
+				// light_chamber1.position.set(-127, 110, 150);
+				// light_chamber1.rotation.y = 2* Math.PI / 3;
+				// scene.add( light_chamber1);
+
+				// var geometry4 = new THREE.SphereBufferGeometry( 5, 5, 10 );
+				// var material4 = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+				// var sphere4 = new THREE.Mesh( geometry4, material4 );
+				// sphere4.position.set(-125, 110, 150);
+				// scene.add( sphere4 );
 
 				controls = new PointerLockControls( camera );
 
@@ -187,12 +225,12 @@
 
 				var audioLoader = new THREE.AudioLoader();
 
-			var sound4 = new THREE.Audio( listener );
-			audioLoader.load( 'textures/musics/music1.mp3', function ( buffer ) {
-					sound4.setBuffer( buffer );
-					sound4.setLoop( true );
-					sound4.setVolume( 0.5 );
-					sound4.play();
+				var sound4 = new THREE.Audio( listener );
+				audioLoader.load( 'textures/musics/music1.mp3', function ( buffer ) {
+						sound4.setBuffer( buffer );
+						sound4.setLoop( true );
+						sound4.setVolume( 0.5 );
+						sound4.play();
 				} );
 
 
@@ -279,10 +317,19 @@
 
 				var loader = new GLTFLoader().setPath( 'textures/personnage/' );
 				loader.load( 'scene.gltf', function ( gltf ) {
-					gltf.scene.position.z = 0;
-					gltf.scene.position.y = 43;
-					gltf.scene.rotation.y = Math.PI / 2;
-					gltf.scene.scale.set(40, 40, 40);
+					gltf.scene.scale.set(0.5, 0.5, 0.5);
+					scene.add( gltf.scene );
+
+				} );
+
+				var loader = new GLTFLoader().setPath( 'textures/worklight/' );
+				loader.load( 'scene.gltf', function ( gltf ) {
+					gltf.scene.position.x = -135;
+					gltf.scene.position.z = 135;
+					gltf.scene.position.y = 9;
+					gltf.scene.scale.set(5, 5, 5);
+					gltf.scene.rotation.y = 2* Math.PI / 3;
+
 					scene.add( gltf.scene );
 
 				} );
