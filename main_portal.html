@@ -557,22 +557,6 @@
 				 console.log('drag');
 				 event.object.material.color.r = 0.8;
 
-				 document.body.addEventListener("scroll", function(){ // or window.addEventListener("scroll"....
-						var st = window.pageYOffset || document.documentElement.scrollTop; // Credits: "https://github.com/qeremy/so/blob/master/so.dom.js#L426"
-						console.log(st);
-						if (st > lastScrollTop){
-
-
-						} else {
-							 return false;
-						}
-							lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
-					 }, false);
-					}
-
-				 console.log(scrollDirection());
-
-				// element should be replaced with the actual target element on which you have applied scroll, use window in case of no target element.
 
 				});
 
