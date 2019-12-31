@@ -546,7 +546,7 @@
 
 				var controls_drag = new DragControls( objects_drag, camera, document.body );
 
-				console.log(document.body);
+				console.log(objects_drag);
 
 				controls_drag.addEventListener( 'dragstart', function ( event ) {
 					console.log("drag start");
@@ -563,6 +563,7 @@
 				controls_drag.addEventListener( 'dragend', function ( event ) {
 					console.log("drag end");
 					event.object.material.color.r = 1;
+					event.object.translateY( -event.object.position.y+25 );
 				} );
 
 				//gui
