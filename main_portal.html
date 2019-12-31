@@ -53,6 +53,7 @@
 			var spotLight_chamber, lightHelper;
 
 			var objects = [];
+			var objects_animate = [];
 
 			var raycaster;
 
@@ -129,7 +130,7 @@
 				// sphere4.position.set(-125, 110, 150);
 				// scene.add( sphere4 );
 
-				controls = new PointerLockControls( camera );
+				controls = new PointerLockControls( camera, document.body );
 
 				var overlay = document.getElementById( 'overlay' );
 				var startButton = document.getElementById('startButton');
@@ -317,7 +318,7 @@
 					gltf.scene.rotation.z = -Math.PI / 2;
 					gltf.scene.scale.set(20, 20, 20);
 					scene.add( gltf.scene );
-					objects.push(gltf.scene);
+					objects_animate.push(gltf.scene);
 
 				} );
 
@@ -341,16 +342,19 @@
 				} );
 
 				var geometry = new THREE.CylinderBufferGeometry( 5, 5, 1, 32 );
-				var material = new THREE.MeshBasicMaterial( { color: 0x00DBFF } );
+				var material = new THREE.MeshBasicMaterial( { color: 0x6AFCF5 } );
 				var cylinder = new THREE.Mesh( geometry, material );
 			  cylinder.position.z = 180;
 				cylinder.position.y = 0.1;
+				cylinder.name = "redCylinder";
 				scene.add( cylinder );
+				objects_animate.push( cylinder);
 
 				var distance = 180;
 				for(var point = 0 ; point < 20 ; point++){
 					cylinder = cylinder.clone();
 					scene.add( cylinder );
+					objects_animate.push( cylinder);
 					cylinder.position.z = distance + 20;
 					distance = cylinder.position.z;
 				}
@@ -494,8 +498,10 @@
         var buttonRed = new THREE.Mesh( geometryRed, materialRed );
         buttonRed.position.z = 126;
         buttonRed.position.x = 1;
-        buttonRed.position.y = 30;
+        buttonRed.position.y = 10;
+				buttonRed.name = "buttonRed";
         scene.add( buttonRed );
+				objects_animate.push(buttonRed);
 				objects.push(buttonRed);
 
 
@@ -515,7 +521,7 @@
             steps: 2,
             depth: 1,
             bevelEnabled: true,
-            bevelThickness: 1,
+            bevelThickness: 3,
             bevelSize: 1,
             bevelOffset: 25,
             bevelSegments: 1
@@ -525,10 +531,12 @@
         var material = new THREE.MeshBasicMaterial( { color: 0xD6D6D6 } );
         var baseButton = new THREE.Mesh( base, material ) ;
         baseButton.rotation.x = Math.PI / 2;
-        baseButton.position.y = 2;
+        baseButton.position.y = 5;
         baseButton.position.z = 120;
         baseButton.position.x = -5;
+				baseButton.name = "baseButton";
         scene.add( baseButton );
+				objects_animate.push(baseButton);
 
 				stats = new Stats();
 				document.body.appendChild( stats.dom );
@@ -536,6 +544,8 @@
 				window.addEventListener( 'resize', onWindowResize, false );
 
 				animate();
+
+
 }
 
 
@@ -605,7 +615,6 @@
 			    return false;
 			}
 
-			console.log(controls.getObject());
 
 			function animate() {
 
@@ -614,9 +623,8 @@
 				if ( controls.isLocked === true ) {
 
 					raycaster.ray.origin.copy( controls.getObject().position );
-					raycaster.ray.origin.y = -10;
 
-					var intersections = raycaster.intersectObjects( objects );
+					var intersections = raycaster.intersectObjects( objects_animate );
 
 					var onObject = intersections.length > 0;
 
@@ -648,6 +656,17 @@
 						velocity.y = Math.max( 0, velocity.y );
 						canJump = true;
 
+						console.log(objects_animate);
+
+						for (var i = 0; i < objects_animate.length; i++) {
+							if(objects_animate[i].name == "redCylinder") {
+									objects_animate[i].material = new THREE.MeshBasicMaterial( { color: 0xD97238 } ) ;
+							}
+
+							if(objects_animate[i].name === "buttonRed") {
+									objects_animate[i].position.y =  6; 
+							}
+						}
 					}
 
 					controls.moveRight( - velocity.x * delta );
