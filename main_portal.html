@@ -54,6 +54,7 @@
 
 			var objects = [];
 			var objects_animate = [];
+			var objects_drag = [];
 
 			var raycaster;
 
@@ -89,7 +90,6 @@
 				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 1500 );
 				scene.add(camera);
 				camera.position.set( 100, 200, 0 );
-				camera.lookAt(scene.position);
 
 				var ambient = new THREE.AmbientLight( 0xffffff, 1 );
 				scene.add( ambient );
@@ -310,18 +310,6 @@
 
 				} );
 
-				var loader = new GLTFLoader().setPath( 'textures/Cube/' );
-				loader.load( 'scene.gltf', function ( gltf ) {
-					gltf.scene.position.z = 130;
-					gltf.scene.position.x = 130;
-					gltf.scene.position.y = 20;
-					gltf.scene.rotation.z = -Math.PI / 2;
-					gltf.scene.scale.set(20, 20, 20);
-					scene.add( gltf.scene );
-					objects_animate.push(gltf.scene);
-
-				} );
-
 				var loader = new GLTFLoader().setPath( 'textures/personnage/' );
 				loader.load( 'scene.gltf', function ( gltf ) {
 					gltf.scene.scale.set(0.5, 0.5, 0.5);
@@ -474,23 +462,30 @@
 
 				}
 
+				var texture_box_portal = new THREE.TextureLoader().load( './textures/texture_box_portal.png' );
+				var geometry_box_portal = new THREE.BoxBufferGeometry( 50, 50, 50 );
+				var material_box_portal = new THREE.MeshBasicMaterial( { map: texture_box_portal} );
+				var box_portal = new THREE.Mesh( geometry_box_portal, material_box_portal );
+				box_portal.position.set(130, 25, 130);
+				box_portal.castShadow = true;
+				box_portal.receiveShadow = true;
+				scene.add(box_portal);
+				objects_drag.push(box_portal);
+				objects.push(box_portal);
+				objects_animate.push(box_portal);
 
-				renderer = new THREE.WebGLRenderer( { antialias: true } );
-				renderer.setPixelRatio( window.devicePixelRatio );
-				renderer.setSize( window.innerWidth, window.innerHeight );
-				renderer.shadowMap.enabled = true;
-				container.appendChild( renderer.domElement );
+				// var loader = new GLTFLoader().setPath( 'textures/Cube/' );
+				// loader.load( 'scene.gltf', function ( gltf ) {
+				// 	gltf.scene.position.z = 130;
+				// 	gltf.scene.position.x = 130;
+				// 	gltf.scene.position.y = 20;
+				// 	gltf.scene.rotation.z = -Math.PI / 2;
+				// 	gltf.scene.scale.set(20, 20, 20);
+				// 	scene.add( gltf.scene );
+				// 	objects_animate.push(gltf.scene);
+				//
+				// } );
 
-
-				//gui
-
-				var SoundControls = function () {
-					this.master = listener.getMasterVolume();
-					this.firstSphere = sound1.getVolume();
-					this.secondSphere = sound2.getVolume();
-					this.thirdSphere = sound3.getVolume();
-					this.Ambient = sound4.getVolume();
-				};
 
 				var geometryRed = new THREE.BoxBufferGeometry( 50, 5, 50 );
 				geometryRed = geometryRed.toNonIndexed(); // ensure each face has unique vertices
@@ -537,6 +532,66 @@
 				baseButton.name = "baseButton";
         scene.add( baseButton );
 				objects_animate.push(baseButton);
+
+
+
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.shadowMap.enabled = true;
+				renderer.shadowMap.type = THREE.PCFShadowMap;
+				container.appendChild( renderer.domElement );
+
+				// controls DragControls
+
+				var controls_drag = new DragControls( objects_drag, camera, document.body );
+
+				console.log(document.body);
+
+				controls_drag.addEventListener( 'dragstart', function ( event ) {
+					console.log("drag start");
+
+				} );
+
+				controls_drag.addEventListener ( 'drag', function( event ){
+				 console.log('drag');
+				 event.object.material.color.r = 0.8;
+
+				 document.body.addEventListener("scroll", function(){ // or window.addEventListener("scroll"....
+						var st = window.pageYOffset || document.documentElement.scrollTop; // Credits: "https://github.com/qeremy/so/blob/master/so.dom.js#L426"
+						console.log(st);
+						if (st > lastScrollTop){
+
+
+						} else {
+							 return false;
+						}
+							lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
+					 }, false);
+					}
+
+				 console.log(scrollDirection());
+
+				// element should be replaced with the actual target element on which you have applied scroll, use window in case of no target element.
+
+				});
+
+				controls_drag.addEventListener( 'dragend', function ( event ) {
+					console.log("drag end");
+					event.object.material.color.r = 1;
+				} );
+
+				//gui
+
+				var SoundControls = function () {
+					this.master = listener.getMasterVolume();
+					this.firstSphere = sound1.getVolume();
+					this.secondSphere = sound2.getVolume();
+					this.thirdSphere = sound3.getVolume();
+					this.Ambient = sound4.getVolume();
+				};
+
+
 
 				stats = new Stats();
 				document.body.appendChild( stats.dom );
@@ -656,15 +711,13 @@
 						velocity.y = Math.max( 0, velocity.y );
 						canJump = true;
 
-						console.log(objects_animate);
-
 						for (var i = 0; i < objects_animate.length; i++) {
 							if(objects_animate[i].name == "redCylinder") {
 									objects_animate[i].material = new THREE.MeshBasicMaterial( { color: 0xD97238 } ) ;
 							}
 
 							if(objects_animate[i].name === "buttonRed") {
-									objects_animate[i].position.y =  6; 
+									objects_animate[i].position.y =  6;
 							}
 						}
 					}
