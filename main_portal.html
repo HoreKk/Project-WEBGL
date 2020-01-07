@@ -26,8 +26,10 @@
 		<div id="overlay">
 			<div>
 				<button id="startButton">Click to Play</button>
-				<p>Start the best game ever</p>
+				<center><p>Move : ZQSD</p></center>
+				<center><p>Jump : SPACE</p></center>
 			</div>
+
 		</div>
 
 		<audio loop id="music" preload="auto" style="display: none">
@@ -91,21 +93,15 @@
 				var overlay = document.getElementById( 'overlay' );
 
 				overlay.addEventListener( 'click', function () {
-
 					controls.lock();
-
 				}, false );
 
 				controls.addEventListener( 'lock', function () {
-
 					overlay.style.display = 'none';
-
 				} );
 
 				controls.addEventListener( 'unlock', function () {
-
 					overlay.style.display = 'flex';
-
 				} );
 
 				scene.add( controls.getObject() );
@@ -115,12 +111,12 @@
 					switch ( event.keyCode ) {
 
 						case 38: // up
-						case 87: // w
+						case 90: // z
 							moveForward = true;
 							break;
 
 						case 37: // left
-						case 65: // a
+						case 81: // q
 							moveLeft = true;
 							break;
 
@@ -148,12 +144,12 @@
 					switch ( event.keyCode ) {
 
 						case 38: // up
-						case 87: // w
+						case 90: // z
 							moveForward = false;
 							break;
 
 						case 37: // left
-						case 65: // a
+						case 81: // q
 							moveLeft = false;
 							break;
 
@@ -204,8 +200,8 @@
 
 				volumeFolder.open();
 
-				var loader = new GLTFLoader().setPath( 'textures/Door-Portal/' );
-				loader.load( 'scene.gltf', function ( gltf ) {
+				var loader_door = new GLTFLoader().setPath( 'textures/Door-Portal/' );
+				loader_door.load( 'scene.gltf', function ( gltf ) {
 					gltf.scene.position.z = 600;
 					gltf.scene.position.y = 1;
 
@@ -213,8 +209,8 @@
 
 				} );
 
-				var loader = new GLTFLoader().setPath( 'textures/logo/' );
-				loader.load( 'scene.gltf', function ( gltf ) {
+				var loader_logo = new GLTFLoader().setPath( 'textures/logo/' );
+				loader_logo.load( 'scene.gltf', function ( gltf ) {
 					gltf.scene.position.z = 0;
 					gltf.scene.position.x = -598;
 					gltf.scene.position.y = 300;
@@ -224,8 +220,8 @@
 
 				} );
 
-				var loader = new GLTFLoader().setPath( 'textures/portal_radio_a_prop/' );
-				loader.load( 'scene.gltf', function ( gltf ) {
+				var loader_radio = new GLTFLoader().setPath( 'textures/portal_radio_a_prop/' );
+				loader_radio.load( 'scene.gltf', function ( gltf ) {
 					gltf.scene.position.set(-100, 0, -150);
 
 					gltf.scene.position.y = 6;
@@ -236,8 +232,8 @@
 
 				} );
 
-				var loader = new GLTFLoader().setPath( 'textures/bed/' );
-				loader.load( 'scene.gltf', function ( gltf ) {
+				var loader_bed = new GLTFLoader().setPath( 'textures/bed/' );
+				loader_bed.load( 'scene.gltf', function ( gltf ) {
 					gltf.scene.position.x = 150;
 					gltf.scene.position.z = -150;
 					gltf.scene.scale.set(50, 50, 50);
@@ -248,8 +244,8 @@
 
 				// caracter
 
-				var loader = new GLTFLoader().setPath( 'textures/camera/' );
-				loader.load( 'scene.gltf', function ( gltf ) {
+				var loader_camera = new GLTFLoader().setPath( 'textures/camera/' );
+				loader_camera.load( 'scene.gltf', function ( gltf ) {
 					gltf.scene.position.z = 600;
 					gltf.scene.position.x = -600;
 					gltf.scene.position.y = 1100;
@@ -260,8 +256,8 @@
 
 				} );
 
-				var loader = new GLTFLoader().setPath( 'textures/Cube/' );
-				loader.load( 'scene.gltf', function ( gltf ) {
+				var loader_cube = new GLTFLoader().setPath( 'textures/Cube/' );
+				loader_cube.load( 'scene.gltf', function ( gltf ) {
 					gltf.scene.position.z = 130;
 					gltf.scene.position.x = 130;
 					gltf.scene.position.y = 20;
@@ -457,7 +453,6 @@
 				document.body.appendChild( stats.dom );
 
 				window.addEventListener( 'resize', onWindowResize, false );
-
 				animate();
 }
 
@@ -523,6 +518,8 @@
 					prevTime = time;
 
 				}
+
+				/* detect button */
 
 				renderer.render( scene, camera );
 				stats.update();
