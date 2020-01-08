@@ -58,6 +58,7 @@
 			var objects = [];
 			var objects_animate = [];
 			var objects_drag = [];
+			var objects_jump = [];
 
 			var raycaster;
 			var mesh;
@@ -230,7 +231,7 @@
 				var audioLoader = new THREE.AudioLoader();
 
 				var sound4 = new THREE.Audio( listener );
-				audioLoader.load( './textures/musics/music1.mp3', function ( buffer ) {
+				audioLoader.load( 'textures/musics/music1.mp3', function ( buffer ) {
 						sound4.setBuffer( buffer );
 						sound4.setLoop( true );
 						sound4.setVolume( 0.5 );
@@ -240,7 +241,7 @@
 				var sound5 = new THREE.PositionalAudio( listener );
 
 				var audioLoader = new THREE.AudioLoader();
-				audioLoader.load( './textures/musics/Portale2.mp3', function ( buffer ) {
+				audioLoader.load( 'textures/musics/Portale2.mp3', function ( buffer ) {
 				        sound5.setBuffer( buffer );
 				        sound5.setLoop( true );
 				        sound5.setRefDistance( 20);
@@ -272,12 +273,11 @@
 
         volumeFolder.add( soundControls, 'Ambient' ).min( 0.0 ).max( 1.0 ).step( 0.01 ).onChange( function () {
             sound4.setVolume( soundControls.Ambient );
-                        } );
+        } );
 
         volumeFolder.add( soundControls, 'Space' ).min( 0.0 ).max( 1.0 ).step( 0.01 ).onChange( function () {
             sound5.setVolume( soundControls.Space );
-        }
-        );
+        } );
 
         // create an object for the sound to play from
         var sphere = new THREE.SphereGeometry( 10, 16, 8 );
@@ -285,10 +285,8 @@
         var mesh = new THREE.Mesh( sphere, material );
 
         mesh.position.set(-100, 0, -150);
-
-            mesh.position.y = 6;
-
-            mesh.scale.set(0.25, 0.25, 0.25);
+        mesh.position.y = 6;
+        mesh.scale.set(0.25, 0.25, 0.25);
         scene.add( mesh );
 
         // finally add the sound to the mesh
@@ -532,10 +530,11 @@
 				box_portal.position.set(130, 25, 130);
 				box_portal.castShadow = true;
 				box_portal.receiveShadow = true;
+				box_portal.name = "boxPortal";
 				scene.add(box_portal);
 				objects_drag.push(box_portal);
 				objects.push(box_portal);
-				objects_animate.push(box_portal);
+				objects_jump.push(box_portal);
 
 				var platform_texture = new THREE.TextureLoader().load( './textures/cube.jpg' );
 				var geometry_platform = new THREE.BoxBufferGeometry( 40, 40, 40 );
@@ -544,9 +543,10 @@
 				platform.position.set(500, 70, 0);
 				platform.castShadow = true;
 				platform.receiveShadow = true;
+				platform.name = "platform";
 				scene.add(platform);
 				objects.push(platform);
-				objects_animate.push(platform);
+				objects_jump.push(platform);
 
 
 				var geometryRed = new THREE.BoxBufferGeometry( 50, 5, 50 );
@@ -560,8 +560,6 @@
         scene.add( buttonRed );
 				objects_animate.push(buttonRed);
 				objects.push(buttonRed);
-
-
 
         //Button
 
@@ -607,8 +605,6 @@
 				// controls DragControls
 
 				var controls_drag = new DragControls( objects_drag, camera, document.body );
-
-				console.log(objects_drag);
 
 				controls_drag.addEventListener( 'dragstart', function ( event ) {
 					console.log("drag start");
@@ -714,9 +710,13 @@
 
 					raycaster.ray.origin.copy( controls.getObject().position );
 
-					var intersections = raycaster.intersectObjects( objects_animate );
+					var intersections_animates = raycaster.intersectObjects( objects_animate );
 
-					var onObject = intersections.length > 0;
+					var onObject_animates = intersections_animates.length > 0;
+
+					var intersections_jump = raycaster.intersectObjects( objects_jump );
+
+					var onObject_jump = intersections_jump.length > 0;
 
 					var time = performance.now();
 					var delta = ( time - prevTime ) / 1000;
@@ -741,13 +741,18 @@
 						velocity.x = 0;
 					}
 
-					if ( onObject === true ) {
+					if (onObject_jump === true) {
+						velocity.y = Math.max( 0, velocity.y );
+						canJump = true;
+					}
+
+					if ( onObject_animates === true ) {
 
 						velocity.y = Math.max( 0, velocity.y );
 						canJump = true;
 
 						for (var i = 0; i < objects_animate.length; i++) {
-							if(objects_animate[i].name === "redCylinder") {
+							if(objects_animate[i].name == "redCylinder") {
 									objects_animate[i].material = new THREE.MeshBasicMaterial( { color: 0xD97238 } ) ;
 							}
 
