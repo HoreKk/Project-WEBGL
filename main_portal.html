@@ -402,6 +402,18 @@
 					gltf.scene.rotation.y = 2* Math.PI / 3;
 				} );
 
+					var loader_cube = new GLTFLoader().setPath( 'textures/Cube/' );
+				loader_cube.load( 'scene.gltf', function ( gltf ) {
+					gltf.scene.position.z = 130;
+					gltf.scene.position.x = 130;
+					gltf.scene.position.y = 20;
+					gltf.scene.rotation.z = -Math.PI / 2;
+					gltf.scene.scale.set(20, 20, 20);
+
+					scene.add( gltf.scene );
+
+				} );
+
 				var geometry = new THREE.CylinderBufferGeometry( 5, 5, 1, 32 );
 				var material = new THREE.MeshBasicMaterial( { color: 0x6AFCF5 } );
 				var cylinder = new THREE.Mesh( geometry, material );
@@ -653,11 +665,15 @@
 				var controls_drag = new DragControls( objects_drag, camera, document.body );
 
 				controls_drag.addEventListener( 'dragstart', function ( event ) {
+					console.log("drag start");
 
 				} );
 
 				controls_drag.addEventListener ( 'drag', function( event ){
+				 console.log('drag');
 				 event.object.material.color.r = 0.8;
+
+
 				});
 
 				controls_drag.addEventListener( 'dragend', function ( event ) {
