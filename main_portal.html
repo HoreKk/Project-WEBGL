@@ -231,25 +231,69 @@
 				var audioLoader = new THREE.AudioLoader();
 
 				var sound4 = new THREE.Audio( listener );
-				audioLoader.load( 'textures/musics/music1.mp3', function ( buffer ) {
+				audioLoader.load( './textures/musics/music1.mp3', function ( buffer ) {
 						sound4.setBuffer( buffer );
 						sound4.setLoop( true );
 						sound4.setVolume( 0.5 );
 						sound4.play();
 				} );
 
+				var sound5 = new THREE.PositionalAudio( listener );
+
+				var audioLoader = new THREE.AudioLoader();
+				audioLoader.load( './textures/musics/Portale2.mp3', function ( buffer ) {
+				        sound5.setBuffer( buffer );
+				        sound5.setLoop( true );
+				        sound5.setRefDistance( 20);
+				        sound5.setVolume( 0.5 );
+				        sound5.play();
+				} );
+
+				// create an object for the sound to play from
+				var sphere = new THREE.SphereGeometry( 10, 16, 8 );
+				var material = new THREE.MeshPhongMaterial( { color: 0xff2200 } );
+				var mesh = new THREE.Mesh( sphere, material );
+
+				mesh.position.set(-100, 0, -150);
+		    mesh.position.y = 6;
+		    mesh.scale.set(0.25, 0.25, 0.25);
+				scene.add( mesh );
+
+				// finally add the sound to the mesh
+				mesh.add( sound5 );
 
 				var SoundControls = function () {
-					this.Ambient = sound4.getVolume();
-				};
+            this.Ambient = sound4.getVolume();
+            this.Space = sound5.getVolume();
+        };
 
-				var gui = new GUI();
-				var soundControls = new SoundControls();
-				var volumeFolder = gui.addFolder( 'Volume' );
+        var gui = new GUI();
+        var soundControls = new SoundControls();
+        var volumeFolder = gui.addFolder( 'Volume' );
 
-				volumeFolder.add( soundControls, 'Ambient' ).min( 0.0 ).max( 1.0 ).step( 0.01 ).onChange( function () {
-					sound4.setVolume( soundControls.Ambient );
-				} );
+        volumeFolder.add( soundControls, 'Ambient' ).min( 0.0 ).max( 1.0 ).step( 0.01 ).onChange( function () {
+            sound4.setVolume( soundControls.Ambient );
+                        } );
+
+        volumeFolder.add( soundControls, 'Space' ).min( 0.0 ).max( 1.0 ).step( 0.01 ).onChange( function () {
+            sound5.setVolume( soundControls.Space );
+        }
+        );
+
+        // create an object for the sound to play from
+        var sphere = new THREE.SphereGeometry( 10, 16, 8 );
+        var material = new THREE.MeshPhongMaterial( { color: 0xff2200 } );
+        var mesh = new THREE.Mesh( sphere, material );
+
+        mesh.position.set(-100, 0, -150);
+
+            mesh.position.y = 6;
+
+            mesh.scale.set(0.25, 0.25, 0.25);
+        scene.add( mesh );
+
+        // finally add the sound to the mesh
+        mesh.add( sound5 );
 
 				volumeFolder.open();
 
@@ -595,17 +639,6 @@
 					event.object.translateY( -event.object.position.y+25 );
 				} );
 
-				//gui
-
-				var SoundControls = function () {
-					this.master = listener.getMasterVolume();
-					this.firstSphere = sound1.getVolume();
-					this.secondSphere = sound2.getVolume();
-					this.thirdSphere = sound3.getVolume();
-					this.Ambient = sound4.getVolume();
-				};
-
-
 
 				stats = new Stats();
 				document.body.appendChild( stats.dom );
@@ -725,7 +758,7 @@
 						canJump = true;
 
 						for (var i = 0; i < objects_animate.length; i++) {
-							if(objects_animate[i].name == "redCylinder") {
+							if(objects_animate[i].name === "redCylinder") {
 									objects_animate[i].material = new THREE.MeshBasicMaterial( { color: 0xD97238 } ) ;
 							}
 
