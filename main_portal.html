@@ -60,7 +60,7 @@
 			var objects_drag = [];
 			var objects_jump = [];
 			var objects_translate = [];
-			var objects_color = [];
+			var objects_end = [];
 
 			var raycaster;
 			var mesh;
@@ -590,7 +590,7 @@
 				cylinder_end.name = "cylinderEnd";
 				scene.add( cylinder_end );
 				objects.push(cylinder_end);
-				objects_color.push(cylinder_end);
+				objects_end.push(cylinder_end);
 
 
 				var geometryRed = new THREE.BoxBufferGeometry( 50, 5, 50 );
@@ -651,7 +651,6 @@
 				var controls_drag = new DragControls( objects_drag, camera, document.body );
 
 				controls_drag.addEventListener( 'dragstart', function ( event ) {
-
 				} );
 
 				controls_drag.addEventListener ( 'drag', function( event ){
@@ -659,7 +658,6 @@
 				});
 
 				controls_drag.addEventListener( 'dragend', function ( event ) {
-					console.log("drag end");
 					event.object.material.color.r = 1;
 					event.object.translateY( -event.object.position.y+25 );
 				} );
@@ -758,6 +756,10 @@
 
 					var onObject_jump = intersections_jump.length > 0;
 
+					var intersections_end = raycaster.intersectObjects( objects_end );
+
+					var onObject_end = intersections_end.length > 0;
+
 					var time = performance.now();
 					var delta = ( time - prevTime ) / 1000;
 
@@ -799,17 +801,21 @@
 							if(objects_animate[i].name === "buttonRed") {
 									objects_animate[i].position.y =  6;
 							}
-
-							/*if(objects_animate[i].name === "cylinderEnd") {
-									objects_animate[i].material = new THREE.MeshBasicMaterial( { color: 0x00FF00 } ) ;
-							}*/
 						}
-
-
 
 						for(var j=2; j < objects_translate.length; j++) {
 								objects_translate[j].position.y =  -200;
-						}
+							}
+
+					}
+
+					if (onObject_end === true) {
+
+						velocity.y = Math.max( 0, velocity.y );
+						canJump = true;
+
+						if(objects_end[0].name === "cylinderEnd")
+							objects_end[0].material = new THREE.MeshBasicMaterial( { color: 0x00FF00 } ) ;
 
 					}
 
