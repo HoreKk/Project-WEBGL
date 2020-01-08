@@ -60,6 +60,7 @@
 			var objects_drag = [];
 			var objects_jump = [];
 			var objects_translate = [];
+			var objects_color = [];
 
 			var raycaster;
 			var mesh;
@@ -96,8 +97,8 @@
 				scene.background = new THREE.Color( 0x999999 );
 
 				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 3000 );
-				//scene.add(camera);
-				//camera.position.set( 100, 200, 0 );
+				scene.add(camera);
+				camera.position.set( 100, 200, 0 );
 
 				var ambient = new THREE.AmbientLight( 0xffffff, 1 );
 				scene.add( ambient );
@@ -309,6 +310,20 @@
 					scene.add( object );
 					object.add(camera);
 				} );
+
+				/*var loader = new FBXLoader();
+				loader.load( 'textures/animation/crawling.fbx', function ( object ){
+					 mixer = new THREE.AnimationMixer( object );
+					var action = mixer.clipAction( object.animations[ 0 ] );
+					action.play();
+					object.traverse( function ( child ) {
+						if ( child.isMesh ) {
+							child.castShadow = true;
+							child.receiveShadow = true;
+						}
+					} );
+					scene.add( object );
+				} );*/
 
 
 
@@ -549,6 +564,36 @@
 				objects.push(platform);
 				objects_jump.push(platform);
 
+				var platform_texture2 = platform_texture.clone();
+				var geometry_platform2 = geometry_platform.clone();
+				var material_platform2 = material_platform.clone();
+				var platform2 = platform.clone();
+				platform2.position.set(500, 110, 0);
+				scene.add(platform2);
+				objects.push(platform2);
+				objects_jump.push(platform2);
+
+				for(var x=1 ; x<6 ; x++){
+					var platform_texture3 = platform_texture2.clone();
+					var geometry_platform3 = geometry_platform2.clone();
+					var material_platform3 = material_platform2.clone();
+					var platform3 = platform2.clone();
+					platform3.position.z = 40 * x;
+					scene.add(platform3);
+					objects.push(platform3);
+					objects_jump.push(platform3);
+					objects_animate.push(platform3);
+				}
+
+				var geometry_cylinder = new THREE.CylinderGeometry( 10, 10, 40, 32 );
+				var material_cylinder = new THREE.MeshBasicMaterial( {color: 0xFF0000} );
+				var cylinder_end = new THREE.Mesh( geometry_cylinder, material_cylinder );
+				cylinder_end.position.set(500, 150, 200);
+				cylinder_end.name = "cylinderEnd";
+				scene.add( cylinder_end );
+				objects.push(cylinder_end);
+				objects_color.push(cylinder_end);
+
 
 				var geometryRed = new THREE.BoxBufferGeometry( 50, 5, 50 );
 				geometryRed = geometryRed.toNonIndexed(); // ensure each face has unique vertices
@@ -684,8 +729,8 @@
 			        return true;
 			    } else {
 			        return false;
-			    }
-			}
+			    	}
+					}
 
 			function rayIntersect(ray, distance) {
 			    var intersects = ray.intersectObjects(objects);
@@ -756,11 +801,18 @@
 							if(objects_animate[i].name === "buttonRed") {
 									objects_animate[i].position.y =  6;
 							}
+
+							/*if(objects_animate[i].name === "cylinderEnd") {
+									objects_animate[i].material = new THREE.MeshBasicMaterial( { color: 0x00FF00 } ) ;
+							}*/
 						}
+
+
 
 						for(var j=2; j < objects_translate.length; j++) {
 								objects_translate[j].position.y =  -200;
 						}
+
 					}
 
 					controls.moveRight( - velocity.x * delta );
