@@ -24,13 +24,8 @@
 		<div id="overlay">
 			<div>
 				<button id="startButton">Click to Play</button>
-<<<<<<< HEAD
-				<center><p>Move : ZQSD</p></center>
-				<center><p>Jump : SPACE</p></center>
-=======
 				<h4>MOVE : WSAD</h4>
 				<h4>JUMP : SPACE</h4>
->>>>>>> teddy
 			</div>
 
 		</div>
@@ -258,10 +253,6 @@
 
 				volumeFolder.open();
 
-<<<<<<< HEAD
-				var loader_door = new GLTFLoader().setPath( 'textures/Door-Portal/' );
-				loader_door.load( 'scene.gltf', function ( gltf ) {
-=======
 				var loader = new FBXLoader();
 				loader.load( 'textures/character/test.fbx', function ( object ){
 					 mixer = new THREE.AnimationMixer( object );
@@ -280,7 +271,6 @@
 
 				var loader = new GLTFLoader().setPath( 'textures/Door-Portal/' );
 				loader.load( 'scene.gltf', function ( gltf ) {
->>>>>>> teddy
 					gltf.scene.position.z = 600;
 					gltf.scene.position.y = 1;
 
@@ -313,20 +303,8 @@
 
 				} );
 
-<<<<<<< HEAD
 				var loader_bed = new GLTFLoader().setPath( 'textures/bed/' );
 				loader_bed.load( 'scene.gltf', function ( gltf ) {
-=======
-			/*	var sound_radio = new THREE.PositionalAudio( listener );
-				audioLoader.load( 'textures/musics/radio.mp3', function ( buffer ) {
-					sound_radio.setBuffer( buffer );
-					sound_radio.setRefDistance( 20 );
-					sound_radio.play();
-				} );*/
-
-				var loader = new GLTFLoader().setPath( 'textures/bed/' );
-				loader.load( 'scene.gltf', function ( gltf ) {
->>>>>>> teddy
 					gltf.scene.position.x = 150;
 					gltf.scene.position.z = -150;
 					gltf.scene.scale.set(30, 30, 30);
