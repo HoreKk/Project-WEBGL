@@ -24,8 +24,10 @@
 		<div id="overlay">
 			<div>
 				<button id="startButton">Click to Play</button>
+				<h3>Game made by LELONG Antoine, BOURMIER Jordan , JEAN-FRANCOIS Teddy and ILUNGA JOEL</h3>
 				<h4>MOVE : WSAD</h4>
 				<h4>JUMP : SPACE</h4>
+
 			</div>
 
 		</div>
@@ -84,6 +86,7 @@
 			var clock = new THREE.Clock();
 			var mixer;
 			var character;
+			var action;
 
 			init();
 			animate();
@@ -314,8 +317,8 @@
 				var loader = new FBXLoader();
 				loader.load( 'textures/animation/test.fbx', function ( object ){
 					 mixer = new THREE.AnimationMixer( object );
-					var action = mixer.clipAction( object.animations[ 0 ] );
-					action.play();
+					action = mixer.clipAction( object.animations[ 0 ] );
+					//action.play();
 					object.traverse( function ( child ) {
 						if ( child.isMesh ) {
 							child.castShadow = true;
@@ -816,7 +819,7 @@
 
 						if(objects_end[0].name === "cylinderEnd")
 							objects_end[0].material = new THREE.MeshBasicMaterial( { color: 0x00FF00 } ) ;
-
+							action.play();
 					}
 
 					controls.moveRight( - velocity.x * delta );
