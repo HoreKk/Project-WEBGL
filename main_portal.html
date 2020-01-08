@@ -296,7 +296,7 @@
 
 				volumeFolder.open();
 
-				var loader = new FBXLoader();
+				/*var loader = new FBXLoader();
 				loader.load( 'textures/character/test.fbx', function ( object ){
 					 mixer = new THREE.AnimationMixer( object );
 					var action = mixer.clipAction( object.animations[ 0 ] );
@@ -309,10 +309,10 @@
 					} );
 					scene.add( object );
 					object.add(camera);
-				} );
+				} );*/
 
-				/*var loader = new FBXLoader();
-				loader.load( 'textures/animation/crawling.fbx', function ( object ){
+				var loader = new FBXLoader();
+				loader.load( 'textures/animation/test.fbx', function ( object ){
 					 mixer = new THREE.AnimationMixer( object );
 					var action = mixer.clipAction( object.animations[ 0 ] );
 					action.play();
@@ -323,9 +323,7 @@
 						}
 					} );
 					scene.add( object );
-				} );*/
-
-
+				} );
 
 				var loader = new GLTFLoader().setPath( 'textures/Door-Portal/' );
 				loader.load( 'scene.gltf', function ( gltf ) {
