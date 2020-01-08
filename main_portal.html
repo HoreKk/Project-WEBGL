@@ -79,7 +79,8 @@
 			var color = new THREE.Color();
 
 			var clock = new THREE.Clock();
-			var mixer
+			var mixer;
+			var character;
 
 			init();
 			animate();
@@ -92,9 +93,9 @@
 				scene = new THREE.Scene();
 				scene.background = new THREE.Color( 0x999999 );
 
-				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 1500 );
-				scene.add(camera);
-				camera.position.set( 100, 200, 0 );
+				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 3000 );
+				//scene.add(camera);
+				//camera.position.set( 100, 200, 0 );
 
 				var ambient = new THREE.AmbientLight( 0xffffff, 1 );
 				scene.add( ambient );
@@ -221,8 +222,6 @@
 				document.addEventListener( 'keydown', onKeyDown, false );
 				document.addEventListener( 'keyup', onKeyUp, false );
 
-				//
-
 				raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, - 1, 0 ), 0, 10 );
 
 				var listener = new THREE.AudioListener();
@@ -309,6 +308,7 @@
 						}
 					} );
 					scene.add( object );
+					object.add(camera);
 				} );
 
 
@@ -388,17 +388,6 @@
 					gltf.scene.rotation.y = 2* Math.PI / 3;
 				} );
 
-					var loader_cube = new GLTFLoader().setPath( 'textures/Cube/' );
-				loader_cube.load( 'scene.gltf', function ( gltf ) {
-					gltf.scene.position.z = 130;
-					gltf.scene.position.x = 130;
-					gltf.scene.position.y = 20;
-					gltf.scene.rotation.z = -Math.PI / 2;
-					gltf.scene.scale.set(20, 20, 20);
-
-					scene.add( gltf.scene );
-
-				} );
 
 				var geometry = new THREE.CylinderBufferGeometry( 5, 5, 1, 32 );
 				var material = new THREE.MeshBasicMaterial( { color: 0x6AFCF5 } );
@@ -792,7 +781,6 @@
 				renderer.render( scene, camera );
 				stats.update();
 			}
-
 
 		</script>
 
