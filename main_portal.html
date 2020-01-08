@@ -24,7 +24,8 @@
 		<div id="overlay">
 			<div>
 				<button id="startButton">Click to Play</button>
-				<p>Start the best game ever</p>
+				<h4>MOVE : WSAD</h4>
+				<h4>JUMP : SPACE</h4>
 			</div>
 		</div>
 
@@ -40,6 +41,7 @@
 			import { GLTFLoader } from '../jsm/loaders/GLTFLoader.js';
 			import Stats from '../jsm/libs/stats.module.js';
 			import { DragControls } from '../jsm/controls/DragControls.js';
+			import { FBXLoader } from '../jsm/loaders/FBXLoader.js';
 
 			import { Refractor } from '../jsm/objects/Refractor.js';
 			import { WaterRefractionShader } from '../jsm/shaders/WaterRefractionShader.js';
@@ -47,7 +49,7 @@
 			import { PointerLockControls } from '../jsm/controls/PointerLockControls.js';
 
 
-			var camera, scene, renderer, sphere;
+			var camera, scene, renderer, sphere,sphere_hidden;
 			var mesh, controls, container, refractor, stats;
 
 			var spotLight_chamber, lightHelper;
@@ -57,6 +59,7 @@
 			var objects_drag = [];
 
 			var raycaster;
+			var mesh;
 
 			var mouse = new THREE.Vector2(), INTERSECTED; // met la position du curseur de la souris
 
@@ -75,6 +78,7 @@
 			var color = new THREE.Color();
 
 			var clock = new THREE.Clock();
+			var mixer
 
 			init();
 			animate();
@@ -104,6 +108,9 @@
 
 				var light1 = new THREE.PointLight( 0xff0040, 2, 50 );
 				light1.position.set(  20,10,0);
+				light1.castShadow = true;
+				light1.shadow.camera.near = 0.1;
+				light1.shadow.camera.far = 25;
 				light1.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: 0xff0040 } ) ) );
 				scene.add( light1 );
 
@@ -251,6 +258,22 @@
 
 				volumeFolder.open();
 
+				var loader = new FBXLoader();
+				loader.load( 'textures/character/test.fbx', function ( object ){
+					 mixer = new THREE.AnimationMixer( object );
+					var action = mixer.clipAction( object.animations[ 0 ] );
+					action.play();
+					object.traverse( function ( child ) {
+						if ( child.isMesh ) {
+							child.castShadow = true;
+							child.receiveShadow = true;
+						}
+					} );
+					scene.add( object );
+				} );
+
+
+
 				var loader = new GLTFLoader().setPath( 'textures/Door-Portal/' );
 				loader.load( 'scene.gltf', function ( gltf ) {
 					gltf.scene.position.z = 600;
@@ -272,8 +295,8 @@
 
 				} );
 
-				var loader = new GLTFLoader().setPath( 'textures/portal_radio_a_prop/' );
-				loader.load( 'scene.gltf', function ( gltf ) {
+				var loader_radio = new GLTFLoader().setPath( 'textures/portal_radio_a_prop/' );
+				loader_radio.load( 'scene.gltf', function ( gltf ) {
 					gltf.scene.position.set(-100, 0, -150);
 
 					gltf.scene.position.y = 6;
@@ -284,6 +307,13 @@
 					objects.push(gltf.scene);
 
 				} );
+
+			/*	var sound_radio = new THREE.PositionalAudio( listener );
+				audioLoader.load( 'textures/musics/radio.mp3', function ( buffer ) {
+					sound_radio.setBuffer( buffer );
+					sound_radio.setRefDistance( 20 );
+					sound_radio.play();
+				} );*/
 
 				var loader = new GLTFLoader().setPath( 'textures/bed/' );
 				loader.load( 'scene.gltf', function ( gltf ) {
@@ -310,12 +340,12 @@
 
 				} );
 
-				var loader = new GLTFLoader().setPath( 'textures/personnage/' );
+				/*var loader = new GLTFLoader().setPath( 'textures/personnage/' );
 				loader.load( 'scene.gltf', function ( gltf ) {
 					gltf.scene.scale.set(0.5, 0.5, 0.5);
 					scene.add( gltf.scene );
 
-				} );
+				} );*/
 
 				var loader = new GLTFLoader().setPath( 'textures/worklight/' );
 				loader.load( 'scene.gltf', function ( gltf ) {
@@ -376,11 +406,13 @@
 
 				var geometry_glass = new THREE.PlaneBufferGeometry( 325, 325, 162.5 );
 				var material_glass = new THREE.MeshBasicMaterial( { map: texture_glass, side: THREE.DoubleSide, opacity: 0.35, transparent: true } );
+				geometry_glass.receiveShadow = true;
 
 				var base_glass = new THREE.Mesh( geometry_glass, material_glass );
 
 				var geometry_chamber = new THREE.PlaneBufferGeometry( 325, 325, 162.5 );
 				var material1 = new THREE.MeshBasicMaterial( { map: texture_glass, side: THREE.DoubleSide } );
+				geometry_chamber.receiveShadow = true;
 
 				var base_chamber = new THREE.Mesh( geometry_chamber, material1 );
 
@@ -458,6 +490,7 @@
 
 					scene.add( base_glass[i] );
 					objects.push(base_glass[i]);
+					objects_animate.push(base_glass[i]);
 
 
 				}
@@ -474,17 +507,16 @@
 				objects.push(box_portal);
 				objects_animate.push(box_portal);
 
-				// var loader = new GLTFLoader().setPath( 'textures/Cube/' );
-				// loader.load( 'scene.gltf', function ( gltf ) {
-				// 	gltf.scene.position.z = 130;
-				// 	gltf.scene.position.x = 130;
-				// 	gltf.scene.position.y = 20;
-				// 	gltf.scene.rotation.z = -Math.PI / 2;
-				// 	gltf.scene.scale.set(20, 20, 20);
-				// 	scene.add( gltf.scene );
-				// 	objects_animate.push(gltf.scene);
-				//
-				// } );
+				var platform_texture = new THREE.TextureLoader().load( './textures/cube.jpg' );
+				var geometry_platform = new THREE.BoxBufferGeometry( 40, 40, 40 );
+				var material_platform = new THREE.MeshBasicMaterial( { map: platform_texture} );
+				var platform = new THREE.Mesh( geometry_platform, material_platform );
+				platform.position.set(500, 70, 0);
+				platform.castShadow = true;
+				platform.receiveShadow = true;
+				scene.add(platform);
+				objects.push(platform);
+				objects_animate.push(platform);
 
 
 				var geometryRed = new THREE.BoxBufferGeometry( 50, 5, 50 );
@@ -539,7 +571,7 @@
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				renderer.shadowMap.enabled = true;
-				renderer.shadowMap.type = THREE.PCFShadowMap;
+				renderer.shadowMap.type = THREE.BasicShadowMap;
 				container.appendChild( renderer.domElement );
 
 				// controls DragControls
@@ -726,8 +758,8 @@
 				}
 
 				//Collision red button
-
-
+				delta = clock.getDelta();
+				if ( mixer ) mixer.update( delta );
 				renderer.render( scene, camera );
 				stats.update();
 			}
